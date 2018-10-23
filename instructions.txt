@@ -1,0 +1,8 @@
+10.23.18
+Install GIT/XCLIP/Atom
+Initialize SSH GIT Key
+Create directory
+Install ROS
+Install Arbotix Controller
+Install Arduino 
+
