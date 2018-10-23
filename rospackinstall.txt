@@ -1,0 +1,26 @@
+Ubuntu install of ROS Melodic: http://wiki.ros.org/melodic/Installation/Ubuntu
+sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
+sudo apt-get update
+sudo apt-get install ros-melodic-desktop-full
+sudo rosdep init
+rosdep update
+echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
+source ~/.bashrc
+sudo apt-get install python-rosinstall python-rosinstall-generator python-wstool build-essential
+
+
+MoveIt! install: http://wiki.ros.org/melodic/Installation/Ubuntu
+sudo apt-get install ros-melodic-moveit
+
+
+Turtlebot ARM install: http://wiki.ros.org/turtlebot_arm/Tutorials/InstallationInstructions
+mkdir -p ~/melodic/src
+echo "export ROS_PACKAGE_PATH=$HOME/melodic/src:$ROS_PACKAGE_PATH" >> ~/.bashrc
+sudo apt-get update
+sudo apt-get install ros-melodic-arbotix
+cd ~/melodic/src
+git clone https://github.com/corot/turtlebot_arm
+cd ~/melodic
+catkin_make
+. ~/.bashrc
