@@ -16,7 +16,7 @@ int posMin = 0;
 int potentMax = 1023;
 int potentMin = 0;
 
-int angle; //current angle of movement
+//int angle; //current angle of movement
 
 //Encoderinfo  int count = 0;
 volatile int encoderPos = 0;
@@ -25,9 +25,10 @@ int n = LOW;
 
 
 //PID Init
-double kp = 0 , ki = 0 , kd = 0;      //initialize by setting to 0        
+double kp = 5 , ki = 0 , kd = .3;      //initialize by setting to 0 //5 , ki = 1 , kd = .3;        
 double input = 0, output = 0, setpoint = 0;
 PID myPID(&input, &output, &setpoint, kp, ki, kd, DIRECT);  
+double error;
 
 void setup() {
   // put your setup code here, to run once:
@@ -77,8 +78,7 @@ void encoderinfo(){
     }
   }
   lastPos = n;
-  //Serial.print("Encoder: ");
-  //Serial.println(encoderPos);
+  error = setpoint - input;
 }
 
 
@@ -89,9 +89,7 @@ void ISRoutine(){
 
 
 void directionDecision(int out){
-    
-  //Serial.println(angle);  
-  
+
   if(encoderPos < out){
     forward();
     analogWrite(enableM1, out);
@@ -105,15 +103,12 @@ void directionDecision(int out){
 
 void loop() {
 
-  angle = map (analogRead(potPin), potentMin, potentMax, posMin, posMax);
-  
-  //Serial.print("Angle: ");
-  Serial.println(angle);
-  Serial.println(analogRead(potPin));
-  
+  int angle = map (analogRead(potPin), potentMin, potentMax, posMin, posMax);
   setpoint = angle;                    //PID while work to achive this value consider as SET value
   input = encoderPos ;           // data from encoder consider as a Process value
   myPID.Compute();                 // calculate new output
   directionDecision(output);  
-
+  //Serial.println(encoderPos);
+  
+  Serial.println(error);
 }
