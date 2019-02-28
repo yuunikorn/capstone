@@ -11,6 +11,10 @@ int motor1B = 8;
 
 //Other Vars
 int PPR = 341;  // Encoder Pulse per revolution.
+int posMax = PPR;
+int posMin = 0;
+int potentMax = 1023;
+int potentMin = 0;
 
 int angle; //current angle of movement
 
@@ -21,7 +25,7 @@ int n = LOW;
 
 
 //PID Init
-double kp = 4 , ki = 1 , kd = .1;      //initialize by setting to 0        
+double kp = 0 , ki = 0 , kd = 0;      //initialize by setting to 0        
 double input = 0, output = 0, setpoint = 0;
 PID myPID(&input, &output, &setpoint, kp, ki, kd, DIRECT);  
 
@@ -101,7 +105,7 @@ void directionDecision(int out){
 
 void loop() {
 
-  angle = map (analogRead(potPin), 0, 1023, 0, 250);
+  angle = map (analogRead(potPin), potentMin, potentMax, posMin, posMax);
   
   //Serial.print("Angle: ");
   Serial.println(angle);
