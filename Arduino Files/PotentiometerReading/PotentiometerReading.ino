@@ -2,7 +2,7 @@
 #include <PID_v1.h>
 
 //IO ports
-int potPin = A0;
+int potPinA0 = A0;
 int enableM1 = 10; //Motor Enable pin Runs on PWM signal
 int Encoder1 = 2;
 int Encoder2 = 3;
@@ -25,14 +25,14 @@ int n = LOW;
 
 
 //PID Init
-double kp = 20 , ki = 0 , kd = 0;      //initialize by setting to 0 //5 , ki = 1 , kd = .3;        
+double kp = 5 , ki = 0 , kd = 0;      //initialize by setting to 0 //5 , ki = 1 , kd = .3;        
 double input = 0, output = 0, setpoint = 0;
 PID myPID(&input, &output, &setpoint, kp, ki, kd, DIRECT);  
 double error;
 
 void setup() {
   // put your setup code here, to run once:
-  pinMode(potPin, INPUT);
+  pinMode(potPinA0, INPUT);
   pinMode(Encoder1, INPUT_PULLUP);
   pinMode(Encoder2, INPUT_PULLUP);
   
@@ -49,7 +49,7 @@ void setup() {
   pinMode(enableM1, OUTPUT);
   pinMode(motor1A, OUTPUT); 
   pinMode(motor1B, OUTPUT); 
-  Serial.begin(2400);
+  Serial.begin(9600);
 }
 
 
@@ -105,8 +105,9 @@ void directionDecision(int out){
 
 void loop() {
 
-  //int angle = map (analogRead(potPin), potentMin, potentMax, posMin, posMax);
-  setpoint = 45;   //angle;                    //PID while work to achive this value consider as SET value
+  int angle = map (analogRead(potPinA0), potentMin, potentMax, posMin, posMax);
+  setpoint = angle; 
+  //setpoint = 45;   //angle;                    //PID while work to achive this value consider as SET value
   input = encoderPos;           // data from encoder consider as a Process value
   myPID.Compute();                 // calculate new output
   directionDecision(output);  
