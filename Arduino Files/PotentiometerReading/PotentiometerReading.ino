@@ -10,7 +10,7 @@ int motor1A = 9;
 int motor1B = 8;
 
 //Other Vars
-int PPR = 341;  // Encoder Pulse per revolution.
+int PPR = 260;  // Encoder Pulse per revolution.
 int posMax = PPR;
 int posMin = 0;
 int potentMax = 1023;
@@ -25,7 +25,7 @@ int n = LOW;
 
 
 //PID Init
-double kp = 5 , ki = 0 , kd = .3;      //initialize by setting to 0 //5 , ki = 1 , kd = .3;        
+double kp = 20 , ki = 0 , kd = 0;      //initialize by setting to 0 //5 , ki = 1 , kd = .3;        
 double input = 0, output = 0, setpoint = 0;
 PID myPID(&input, &output, &setpoint, kp, ki, kd, DIRECT);  
 double error;
@@ -43,13 +43,13 @@ void setup() {
   //TCCR2B = TCCR2B & 0b11111000 | 0x01; // set 31KHz PWM to prevent motor noise
   myPID.SetMode(AUTOMATIC);   //set PID in Auto mode
   myPID.SetSampleTime(1);  // refresh rate of PID controller
-  myPID.SetOutputLimits(-200, 200); // this is the MAX PWM value to move motor, here change in value reflect change in speed of motor.
+  myPID.SetOutputLimits(-250, 250); // this is the MAX PWM value to move motor, here change in value reflect change in speed of motor.
 
   
   pinMode(enableM1, OUTPUT);
   pinMode(motor1A, OUTPUT); 
   pinMode(motor1B, OUTPUT); 
-  Serial.begin(9600);
+  Serial.begin(2400);
 }
 
 
@@ -79,17 +79,19 @@ void encoderinfo(){
   }
   lastPos = n;
   error = setpoint - input;
+ 
 }
 
 
 //ISRROUTNINE
 void ISRoutine(){
   encoderinfo();
+  
 }
 
 
 void directionDecision(int out){
-
+ //Serial.println(encoderPos);
   if(encoderPos < out){
     forward();
     analogWrite(enableM1, out);
@@ -103,12 +105,13 @@ void directionDecision(int out){
 
 void loop() {
 
-  int angle = map (analogRead(potPin), potentMin, potentMax, posMin, posMax);
-  setpoint = angle;                    //PID while work to achive this value consider as SET value
-  input = encoderPos ;           // data from encoder consider as a Process value
+  //int angle = map (analogRead(potPin), potentMin, potentMax, posMin, posMax);
+  setpoint = 45;   //angle;                    //PID while work to achive this value consider as SET value
+  input = encoderPos;           // data from encoder consider as a Process value
   myPID.Compute();                 // calculate new output
   directionDecision(output);  
-  //Serial.println(encoderPos);
+
+  //Serial.println(setpoint);
+  Serial.println(encoderPos);
   
-  Serial.println(error);
 }
